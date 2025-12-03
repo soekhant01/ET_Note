@@ -18,6 +18,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.et_note.notes.ListNotesScreen
 import com.example.et_note.ui.theme.ETNoteAppTheme
 import et_note.composeapp.generated.resources.Res
 import et_note.composeapp.generated.resources.compose_multiplatform
@@ -29,6 +31,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Preview
 fun App() { //this function is starting point
     ETNoteAppTheme {
+        val viewModel = viewModel { HomeViewModel() }
         Scaffold(
             floatingActionButton = {
                 FloatingActionButton(
@@ -45,7 +48,11 @@ fun App() { //this function is starting point
                     modifier = Modifier.fillMaxWidth().padding(16.dp),
                     fontSize = 30.sp
                 )
-                EmptyView()
+                if (viewModel.notes.value.isEmpty()) {
+                    ListNotesScreen(viewModel.notes.value)
+                } else {
+                    EmptyView()
+                }
             }
         }
     }
