@@ -74,11 +74,11 @@ fun App() { //this function is starting point
                     modifier = Modifier.fillMaxWidth().padding(16.dp),
                     fontSize = 30.sp
                 )
-                if (viewModel.notes.value.isEmpty()) {
+                if (notes.value.isEmpty()) {
                     EmptyView()
 
                 } else {
-                    ListNotesScreen(viewModel.notes.value)
+                    ListNotesScreen(notes.value)
                 }
             }
             if (showBottomSheet){
@@ -130,7 +130,8 @@ fun AddItemDialog(
             placeholder = {
                 Text("Title", fontSize = 22.sp)
             },
-            textStyle = TextStyle(fontSize = 22.sp)
+            textStyle = TextStyle(fontSize = 22.sp),
+            modifier = Modifier.fillMaxWidth()
         )
 
 
