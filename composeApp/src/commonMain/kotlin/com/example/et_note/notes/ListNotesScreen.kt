@@ -37,7 +37,7 @@ fun NoteItem(note: Note) {
             .background(getRandomColour()).padding(8.dp)
     ) {
 
-        Text(text = note.title, fontSize = 22.sp)
+        Text(text = note.title, fontSize = 22.sp, color = Color.Black)
     }
 }
 
