@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.et_note.db.NoteDatabase
 import com.example.et_note.model.Note
 import com.example.et_note.notes.ListNotesScreen
 import com.example.et_note.ui.theme.ETNoteAppTheme
@@ -48,9 +49,9 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 @Preview
-fun App() { //this function is starting point
+fun App(database: NoteDatabase) { //this function is starting point
     ETNoteAppTheme {
-        val viewModel = viewModel { HomeViewModel() }
+        val viewModel = viewModel { HomeViewModel(database ) }
         val bottomSheet = rememberModalBottomSheetState()
         var showBottomSheet by remember { mutableStateOf(false) }
         val coroutineScope = rememberCoroutineScope()
@@ -65,7 +66,7 @@ fun App() { //this function is starting point
                     Text(text = "+", fontSize = 18.sp)
                 }
             }) {
-            val notes = viewModel.notes.collectAsStateWithLifecycle()
+            val notes = viewModel.notes.collectAsStateWithLifecycle(emptyList())
             Column(
                 modifier = Modifier.padding(it)
             ) {

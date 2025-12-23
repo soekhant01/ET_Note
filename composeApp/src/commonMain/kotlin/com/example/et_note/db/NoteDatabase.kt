@@ -16,7 +16,7 @@ abstract class NoteDatabase: RoomDatabase() {
 }
 
 @Suppress("KotlinNoActualForExpect")
-expect class NoteDatabaseConstructor: RoomDatabaseConstructor<NoteDatabase>{
+expect object NoteDatabaseConstructor: RoomDatabaseConstructor<NoteDatabase>{
     override fun initialize(): NoteDatabase
 }
 
