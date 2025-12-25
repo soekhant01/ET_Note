@@ -32,19 +32,21 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.example.et_note.HomeViewModel
 import com.example.et_note.db.NoteDatabase
 import com.example.et_note.model.Note
 import com.example.et_note.notes.ListNotesScreen
 import et_note.composeapp.generated.resources.Res
 import et_note.composeapp.generated.resources.rafiki
+import et_note.composeapp.generated.resources.user
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(database: NoteDatabase){
-    val viewModel = viewModel { HomeViewModel(database ) }
+fun HomeScreen(database: NoteDatabase, navController: NavController) {
+    val viewModel = viewModel { HomeViewModel(database) }
     val bottomSheet = rememberModalBottomSheetState()
     var showBottomSheet by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
@@ -63,11 +65,23 @@ fun HomeScreen(database: NoteDatabase){
         Column(
             modifier = Modifier.padding(it)
         ) {
-            Text(
-                text = "Notes",
-                modifier = Modifier.fillMaxWidth().padding(16.dp),
-                fontSize = 30.sp
-            )
+            Box(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = "Notes",
+                    modifier = Modifier.fillMaxWidth().padding(16.dp),
+                    fontSize = 30.sp
+                )
+
+                Image(
+                    painterResource(Res.drawable.user),
+                    null,
+                    modifier = Modifier.padding(end = 16.dp).size(48.dp).padding(4.dp).clickable {
+                        navController.navigate("signup")
+                    }.align(Alignment.CenterEnd)
+                )
+            }
             if (notes.value.isEmpty()) {
                 EmptyView()
 
@@ -75,13 +89,13 @@ fun HomeScreen(database: NoteDatabase){
                 ListNotesScreen(notes.value)
             }
         }
-        if (showBottomSheet){
+        if (showBottomSheet) {
             ModalBottomSheet(
                 onDismissRequest = {
                     showBottomSheet = false
                 },
                 sheetState = bottomSheet
-            ){
+            ) {
                 AddItemDialog(
                     onCancel = {
                         coroutineScope.launch {
@@ -105,7 +119,7 @@ fun HomeScreen(database: NoteDatabase){
 fun AddItemDialog(
     onSave: (Note) -> Unit,
     onCancel: () -> Unit
-){
+) {
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
 
@@ -118,7 +132,7 @@ fun AddItemDialog(
         )
         TextField(
             value = title,
-            onValueChange = {title = it},
+            onValueChange = { title = it },
             colors = color,
             placeholder = {
                 Text("Title", fontSize = 22.sp)
@@ -130,7 +144,7 @@ fun AddItemDialog(
 
         TextField(
             value = description,
-            onValueChange = {description = it},
+            onValueChange = { description = it },
             colors = color,
             placeholder = {
                 Text("Description")
@@ -143,15 +157,15 @@ fun AddItemDialog(
         ) {
             Text(
                 text = "cancel",
-                modifier = Modifier.padding(8.dp).clickable{
+                modifier = Modifier.padding(8.dp).clickable {
                     onCancel()
                 }
             )
 
             Text(
                 text = "save",
-                modifier = Modifier.padding(8.dp).clickable{
-                    onSave(Note(title,description))
+                modifier = Modifier.padding(8.dp).clickable {
+                    onSave(Note(title, description))
                 }
             )
         }

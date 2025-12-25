@@ -39,6 +39,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.et_note.db.NoteDatabase
+import com.example.et_note.feature.auth.SignUpScreen
 import com.example.et_note.feature.home.HomeScreen
 import com.example.et_note.model.Note
 import com.example.et_note.notes.ListNotesScreen
@@ -59,7 +60,11 @@ fun App(database: NoteDatabase) { //this function is starting point
         val navController = rememberNavController()
         NavHost(navController, startDestination = "home"){
             composable(route = "home") {
-                HomeScreen(database)
+                HomeScreen(database, navController )
+            }
+
+            composable(route = "signup") {
+                SignUpScreen(navController)
             }
         }
     }
