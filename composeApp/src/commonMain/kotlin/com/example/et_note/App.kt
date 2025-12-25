@@ -35,7 +35,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.et_note.db.NoteDatabase
+import com.example.et_note.feature.home.HomeScreen
 import com.example.et_note.model.Note
 import com.example.et_note.notes.ListNotesScreen
 import com.example.et_note.ui.theme.ETNoteAppTheme
@@ -50,140 +54,14 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 @Preview
 fun App(database: NoteDatabase) { //this function is starting point
+
     ETNoteAppTheme {
-        val viewModel = viewModel { HomeViewModel(database ) }
-        val bottomSheet = rememberModalBottomSheetState()
-        var showBottomSheet by remember { mutableStateOf(false) }
-        val coroutineScope = rememberCoroutineScope()
-
-        Scaffold(
-            floatingActionButton = {
-                FloatingActionButton(
-                    onClick = {
-                        showBottomSheet = true
-                    }, shape = CircleShape
-                ) {
-                    Text(text = "+", fontSize = 18.sp)
-                }
-            }) {
-            val notes = viewModel.notes.collectAsStateWithLifecycle(emptyList())
-            Column(
-                modifier = Modifier.padding(it)
-            ) {
-                Text(
-                    text = "Notes",
-                    modifier = Modifier.fillMaxWidth().padding(16.dp),
-                    fontSize = 30.sp
-                )
-                if (notes.value.isEmpty()) {
-                    EmptyView()
-
-                } else {
-                    ListNotesScreen(notes.value)
-                }
-            }
-            if (showBottomSheet){
-                ModalBottomSheet(
-                    onDismissRequest = {
-                        showBottomSheet = false
-                    },
-                    sheetState = bottomSheet
-                ){
-                    AddItemDialog(
-                        onCancel = {
-                            coroutineScope.launch {
-                                bottomSheet.hide()
-                            }
-                            showBottomSheet = false
-                        }, onSave = {
-                            viewModel.addNotes(it)
-                            coroutineScope.launch {
-                                bottomSheet.hide()
-                            }
-                            showBottomSheet = false
-                        }
-                    )
-                }
+        val navController = rememberNavController()
+        NavHost(navController, startDestination = "home"){
+            composable(route = "home") {
+                HomeScreen(database)
             }
         }
     }
 }
 
-@Composable
-fun AddItemDialog(
-    onSave: (Note) -> Unit,
-    onCancel: () -> Unit
-    ){
-    var title by remember { mutableStateOf("") }
-    var description by remember { mutableStateOf("") }
-
-    Column(
-        modifier = Modifier.padding(16.dp)
-    ) {
-        val color = TextFieldDefaults.colors(
-            focusedContainerColor = Transparent,
-            unfocusedContainerColor = Transparent
-        )
-        TextField(
-            value = title,
-            onValueChange = {title = it},
-            colors = color,
-            placeholder = {
-                Text("Title", fontSize = 22.sp)
-            },
-            textStyle = TextStyle(fontSize = 22.sp),
-            modifier = Modifier.fillMaxWidth()
-        )
-
-
-        TextField(
-            value = description,
-            onValueChange = {description = it},
-            colors = color,
-            placeholder = {
-                Text("Description")
-            },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Row(
-            modifier = Modifier.align(Alignment.End)
-        ) {
-            Text(
-                text = "cancel",
-                modifier = Modifier.padding(8.dp).clickable{
-                    onCancel()
-                }
-            )
-
-            Text(
-                text = "save",
-                modifier = Modifier.padding(8.dp).clickable{
-                    onSave(Note(title,description))
-                }
-            )
-        }
-
-    }
-
-}
-
-@Composable
-fun EmptyView() {
-    Box(modifier = Modifier.fillMaxSize()) {
-        Column(
-            modifier = Modifier.align(Alignment.Center)
-        ) {
-            Image(
-                painterResource(Res.drawable.rafiki),
-                contentDescription = null,
-                modifier = Modifier.size(200.dp)
-            )
-            Text(
-                text = "Create Your First Note",
-                modifier = Modifier.align(Alignment.CenterHorizontally),
-                fontSize = 16.sp,
-            )
-        }
-    }
-}
