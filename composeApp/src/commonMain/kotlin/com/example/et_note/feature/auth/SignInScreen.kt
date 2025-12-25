@@ -21,12 +21,11 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 
 @Composable
-fun SignUpScreen(navController: NavController) {
+fun SignInScreen(navController: NavController) {
     val viewModel = viewModel { SignUpViewModel() }
 
     val email = viewModel.email.collectAsStateWithLifecycle()
     val password = viewModel.password.collectAsStateWithLifecycle()
-    val confirmPassword = viewModel.confirmPassword.collectAsStateWithLifecycle()
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -70,29 +69,15 @@ fun SignUpScreen(navController: NavController) {
         )
         Spacer(Modifier.size(16.dp))
 
-//        confirm password text field
-        OutlinedTextField(
-            confirmPassword.value,
-            onValueChange = {
-                viewModel.onConfirmPasswordUpdate(it)
-            },
-            modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp),
-            placeholder = {
-                Text("Confirm Password")
-            },
-            label = {
-                Text("Confirm Password")
-            }
 
-        )
         Spacer(Modifier.size(16.dp))
 
         TextButton(
             {
-                navController.navigate("signIn")
+                navController.popBackStack()
             },
         ){
-            Text("Already you have an account? Sign in")
+            Text("Don't have an account? Login")
         }
         Spacer(Modifier.size(16.dp))
 
