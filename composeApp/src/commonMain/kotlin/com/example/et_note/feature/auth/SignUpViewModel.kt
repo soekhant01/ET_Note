@@ -28,10 +28,10 @@ class SignUpViewModel: ViewModel() {
         }
     }
 
-    fun onSuccessClick(){
+    fun onSuccessClick(email: String){
 
         viewModelScope.launch {
-            _navigationFlow.emit(AuthNavigation.NavigateToHome)
+            _navigationFlow.emit(AuthNavigation.NavigateToHome(email))
         }
     }
     private val _email = MutableStateFlow<String>("")
@@ -68,7 +68,7 @@ class SignUpViewModel: ViewModel() {
 }
 
 sealed class AuthNavigation{
-    object NavigateToHome: AuthNavigation()
+    class NavigateToHome(val email: String): AuthNavigation()
 }
 sealed class AuthState{
     object Normal: AuthState()

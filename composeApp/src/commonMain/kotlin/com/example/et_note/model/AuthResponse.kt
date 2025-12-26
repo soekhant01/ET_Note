@@ -1,5 +1,8 @@
 package com.example.et_note.model
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class AuthResponse(
     val accessToken: String,
     val email: String,
