@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -27,81 +28,127 @@ fun SignUpScreen(navController: NavController) {
     val email = viewModel.email.collectAsStateWithLifecycle()
     val password = viewModel.password.collectAsStateWithLifecycle()
     val confirmPassword = viewModel.confirmPassword.collectAsStateWithLifecycle()
+    val uiState = viewModel.uiState.collectAsStateWithLifecycle()
+    when (uiState.value) {
 
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text("Sign Up", fontSize = 22.sp)
-        Spacer(Modifier.size(16.dp))
+        is AuthState.Loading -> {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                CircularProgressIndicator()
+                Text("Loading...")
+            }
+        }
+
+        is AuthState.Failure -> {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text("Successful: ${(uiState.value as AuthState.Failure).error}")
+                Button(
+                    onClick = { viewModel.onErrorClick() }
+                ) { Text("Retry") }
+            }
+        }
+
+        is AuthState.Success -> {
+
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text("Successful: ${(uiState.value as AuthState.Success).response.email}")
+                Button(
+                    onClick = { viewModel.onSuccessClick() }
+                ) { Text("Go Back") }
+            }
+
+        }
+
+        is AuthState.Normal -> {
+
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text("Sign Up", fontSize = 22.sp)
+                Spacer(Modifier.size(16.dp))
 
 //        email text field
-        OutlinedTextField(
-            email.value,
-            onValueChange = {
-                viewModel.onEmailUpdate(it)
-            },
-            modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp),
-            placeholder = {
-                Text("Email")
-            },
-            label = {
-                Text("Email")
-            }
+                OutlinedTextField(
+                    email.value,
+                    onValueChange = {
+                        viewModel.onEmailUpdate(it)
+                    },
+                    modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp),
+                    placeholder = {
+                        Text("Email")
+                    },
+                    label = {
+                        Text("Email")
+                    }
 
-        )
-        Spacer(Modifier.size(16.dp))
+                )
+                Spacer(Modifier.size(16.dp))
 
 //        password text field
-        OutlinedTextField(
-            password.value,
-            onValueChange = {
-                viewModel.onPasswordUpdate(it)
-            },
-            modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp),
-            placeholder = {
-                Text("Password")
-            },
-            label = {
-                Text("Password")
-            }
+                OutlinedTextField(
+                    password.value,
+                    onValueChange = {
+                        viewModel.onPasswordUpdate(it)
+                    },
+                    modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp),
+                    placeholder = {
+                        Text("Password")
+                    },
+                    label = {
+                        Text("Password")
+                    }
 
-        )
-        Spacer(Modifier.size(16.dp))
+                )
+                Spacer(Modifier.size(16.dp))
 
 //        confirm password text field
-        OutlinedTextField(
-            confirmPassword.value,
-            onValueChange = {
-                viewModel.onConfirmPasswordUpdate(it)
-            },
-            modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp),
-            placeholder = {
-                Text("Confirm Password")
-            },
-            label = {
-                Text("Confirm Password")
+                OutlinedTextField(
+                    confirmPassword.value,
+                    onValueChange = {
+                        viewModel.onConfirmPasswordUpdate(it)
+                    },
+                    modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp),
+                    placeholder = {
+                        Text("Confirm Password")
+                    },
+                    label = {
+                        Text("Confirm Password")
+                    }
+
+                )
+                Spacer(Modifier.size(16.dp))
+
+                TextButton(
+                    {
+                        navController.navigate("signIn")
+                    },
+                ) {
+                    Text("Already you have an account? Sign in ")
+                }
+                Spacer(Modifier.size(16.dp))
+
+                Button(onClick = {
+                    viewModel.signUp()
+                }, modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp)) {
+                    Text("Submit")
+                }
+
+
             }
-
-        )
-        Spacer(Modifier.size(16.dp))
-
-        TextButton(
-            {
-                navController.navigate("signIn")
-            },
-        ){
-            Text("Already you have an account? Sign in ")
         }
-        Spacer(Modifier.size(16.dp))
-
-        Button(onClick = {
-            viewModel.signUp()
-        }, modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp)){
-            Text("Submit")
-        }
-
-
     }
+
 }
