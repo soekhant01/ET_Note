@@ -1,11 +1,35 @@
 package com.example.et_note.feature.auth
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.et_note.model.AuthResponse
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 
 class SignUpViewModel: ViewModel() {
+
+    private val _uiState = MutableStateFlow<AuthState>(AuthState.Normal)
+    val uiState = _uiState.asStateFlow()
+
+    private val _navigationFlow = MutableSharedFlow<AuthNavigation>()
+    val navigationFlow = _navigationFlow.asSharedFlow()
+
+    fun onErrorClick(){
+
+        viewModelScope.launch {
+            _uiState.value = AuthState.Normal
+        }
+    }
+
+    fun onSuccessClick(){
+
+        viewModelScope.launch {
+            _navigationFlow.emit(AuthNavigation.NavigateToHome)
+        }
+    }
     private val _email = MutableStateFlow<String>("")
     val email = _email.asStateFlow()
 
@@ -32,6 +56,9 @@ class SignUpViewModel: ViewModel() {
     }
 }
 
+sealed class AuthNavigation{
+    object NavigateToHome: AuthNavigation()
+}
 sealed class AuthState{
     object Normal: AuthState()
     object Loading: AuthState()
