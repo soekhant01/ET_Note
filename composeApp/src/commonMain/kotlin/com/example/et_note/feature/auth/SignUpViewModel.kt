@@ -1,6 +1,7 @@
 package com.example.et_note.feature.auth
 
 import androidx.lifecycle.ViewModel
+import com.example.et_note.model.AuthResponse
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
@@ -29,4 +30,11 @@ class SignUpViewModel: ViewModel() {
     fun signUp(){
 
     }
+}
+
+sealed class AuthState{
+    object Normal: AuthState()
+    object Loading: AuthState()
+    class Success(val response: AuthResponse): AuthState()
+    class Failure(val error: String): AuthState()
 }
