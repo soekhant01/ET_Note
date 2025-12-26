@@ -92,7 +92,7 @@ fun SignUpScreen(navController: NavController) {
                 navController.navigate("signIn")
             },
         ){
-            Text("Already you have an account? Sign in")
+            Text("Already you have an account? Sign in ")
         }
         Spacer(Modifier.size(16.dp))
 

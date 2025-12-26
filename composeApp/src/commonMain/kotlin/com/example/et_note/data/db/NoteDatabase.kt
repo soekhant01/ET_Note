@@ -1,4 +1,4 @@
-package com.example.et_note.db
+package com.example.et_note.data.db
 
 import androidx.room.ConstructedBy
 import androidx.room.Database

@@ -34,7 +34,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.et_note.HomeViewModel
-import com.example.et_note.db.NoteDatabase
+import com.example.et_note.data.db.NoteDatabase
 import com.example.et_note.model.Note
 import com.example.et_note.notes.ListNotesScreen
 import et_note.composeapp.generated.resources.Res

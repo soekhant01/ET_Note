@@ -2,11 +2,10 @@ package com.example.et_note
 
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.example.et_note.db.NoteDatabase
+import com.example.et_note.data.db.NoteDatabase
 import kotlinx.cinterop.ExperimentalForeignApi
 import platform.Foundation.NSDocumentDirectory
 import platform.Foundation.NSFileManager
-import platform.Foundation.NSHomeDirectory
 import platform.Foundation.NSUserDomainMask
 
 
