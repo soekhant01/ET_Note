@@ -19,6 +19,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -52,7 +53,10 @@ fun HomeScreen(database: NoteDatabase,dataStoreManager: DataStoreManager, navCon
     var showBottomSheet by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
 
-    val email = viewModel.userEmail.collectAsStateWithLifecycle()
+    val email = remember { mutableStateOf("") }
+    LaunchedEffect(true){
+        email.value = dataStoreManager.getEmail() ?: ""
+    }
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
@@ -88,7 +92,10 @@ fun HomeScreen(database: NoteDatabase,dataStoreManager: DataStoreManager, navCon
                         null,
                         modifier = Modifier.padding(end = 16.dp).size(48.dp).padding(4.dp)
                             .clickable {
-                                navController.navigate("signup")
+                                coroutineScope.launch {
+                                    if (dataStoreManager.getToken() != null) navController.navigate("profile")
+                                    else navController.navigate("signup")
+                                }
                             }
                     )
                 }

@@ -2,6 +2,7 @@ package com.example.et_note.feature.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.et_note.data.cache.DataStoreManager
 import com.example.et_note.data.remote.ApiService
 import com.example.et_note.data.remote.HttpClientFactory
 import com.example.et_note.model.AuthRequest
@@ -11,7 +12,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class SignInViewModel: ViewModel() {
+class SignInViewModel(private val dataStoreManager: DataStoreManager): ViewModel() {
     private val _email = MutableStateFlow<String>("")
     val email = _email.asStateFlow()
 
@@ -54,7 +55,15 @@ class SignInViewModel: ViewModel() {
             val request = AuthRequest(email.value, password.value)
             _uiState.value = AuthState.Loading
             val result = apiService.login(request)
-            if(result.isSuccess) _uiState.value = AuthState.Success(result.getOrNull()!!)
+            if(result.isSuccess) {
+                _uiState.value = AuthState.Success(result.getOrNull()!!)
+                result.getOrNull()?.let {
+                    dataStoreManager.storeEmail(it.email)
+                    dataStoreManager.storeToken(it.accessToken)
+                    dataStoreManager.storeRefresh(it.refreshToken)
+                    dataStoreManager.storeUserId(it.userId)
+                }
+            }
             else AuthState.Failure(result.exceptionOrNull()?.message.toString())
         }
     }

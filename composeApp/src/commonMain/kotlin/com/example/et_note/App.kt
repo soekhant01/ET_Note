@@ -27,11 +27,11 @@ fun App(database: NoteDatabase, dataStoreManager: DataStoreManager) { //this fun
             }
 
             composable(route = "signup") {
-                SignUpScreen(navController)
+                SignUpScreen(navController,dataStoreManager)
             }
 
             composable(route = "signIn") {
-                SignInScreen(navController)
+                SignInScreen(navController, dataStoreManager)
             }
 
             composable(route = "profile") {

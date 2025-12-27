@@ -13,7 +13,7 @@ import platform.Foundation.NSFileManager
 import platform.Foundation.NSUserDomainMask
 
 
-fun getDataStoreBuilder(): DataStore<Preferences> {
+fun createDataStore(): DataStore<Preferences> {
     return createDataStore(
         producePath = {
             getDocumentPath() + "/${dataStoreFileName}"
