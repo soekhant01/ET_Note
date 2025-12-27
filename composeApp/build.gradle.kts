@@ -55,6 +55,10 @@ kotlin {
             implementation(libs.ktor.serialization.kotlinx.json)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.serialization.json)
+
+//            datastore
+            implementation(libs.androidx.datastore.core)
+            implementation(libs.androidx.datastore.preferences.core)
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
