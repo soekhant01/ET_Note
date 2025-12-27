@@ -34,6 +34,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.et_note.HomeViewModel
+import com.example.et_note.data.cache.DataStoreManager
 import com.example.et_note.data.db.NoteDatabase
 import com.example.et_note.model.Note
 import com.example.et_note.notes.ListNotesScreen
@@ -45,14 +46,13 @@ import org.jetbrains.compose.resources.painterResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(database: NoteDatabase, navController: NavController) {
-    val viewModel = viewModel { HomeViewModel(database) }
+fun HomeScreen(database: NoteDatabase,dataStoreManager: DataStoreManager, navController: NavController) {
+    val viewModel = viewModel { HomeViewModel(database, dataStoreManager = dataStoreManager) }
     val bottomSheet = rememberModalBottomSheetState()
     var showBottomSheet by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
 
-    val email = navController.currentBackStackEntry?.savedStateHandle?.getStateFlow("email", "")
-
+    val email = viewModel.userEmail.collectAsStateWithLifecycle()
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(

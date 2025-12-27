@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.et_note.data.cache.DataStoreManager
 import com.example.et_note.data.db.NoteDatabase
 import com.example.et_note.feature.auth.SignInScreen
 import com.example.et_note.feature.auth.SignUpScreen
@@ -15,7 +16,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 @Preview
-fun App(database: NoteDatabase) { //this function is starting point
+fun App(database: NoteDatabase, dataStoreManager: DataStoreManager) { //this function is starting point
 
     ETNoteAppTheme {
         val navController = rememberNavController()
