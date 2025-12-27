@@ -10,6 +10,7 @@ import com.example.et_note.data.db.NoteDatabase
 import com.example.et_note.feature.auth.SignInScreen
 import com.example.et_note.feature.auth.SignUpScreen
 import com.example.et_note.feature.home.HomeScreen
+import com.example.et_note.feature.profile.UserProfile
 import com.example.et_note.ui.theme.ETNoteAppTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -22,7 +23,7 @@ fun App(database: NoteDatabase, dataStoreManager: DataStoreManager) { //this fun
         val navController = rememberNavController()
         NavHost(navController, startDestination = "home"){
             composable(route = "home") {
-                HomeScreen(database, navController )
+                HomeScreen(database, dataStoreManager,navController )
             }
 
             composable(route = "signup") {
@@ -31,6 +32,10 @@ fun App(database: NoteDatabase, dataStoreManager: DataStoreManager) { //this fun
 
             composable(route = "signIn") {
                 SignInScreen(navController)
+            }
+
+            composable(route = "profile") {
+                UserProfile(dataStoreManager)
             }
         }
     }
