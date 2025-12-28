@@ -58,7 +58,7 @@ class DataStoreManager(private val dataStore: DataStore<Preferences>) {
         return getString(REFRESH_KEY)
     }
 
-    suspend fun getUseId(): String? {
+    suspend fun getUserId(): String? {
         return getString(USER_ID_KEY)
     }
 

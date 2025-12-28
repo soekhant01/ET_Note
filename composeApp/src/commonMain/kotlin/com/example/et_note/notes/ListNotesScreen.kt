@@ -46,9 +46,21 @@ fun NoteItem(note: Note) {
 fun PreviewList() {
     ListNotesScreen(
         listOf(
-            Note("This is the note that I want to show to the users", "This is Description"),
-            Note("This is the note that I want to show to the users", "This is Description"),
-            Note("This is the note that I want to show to the users", "This is Description")
+            Note(
+                title = "This is the note that I want to show to the users",
+                description = "This is Description",
+                userId = 1.toString()
+            ),
+            Note(
+                title = "This is the note that I want to show to the users",
+                description = "This is Description",
+                userId = 1.toString()
+            ),
+            Note(
+                title = "This is the note that I want to show to the users",
+                description = "This is Description",
+                userId = 1.toString()
+            )
         )
     )
 }

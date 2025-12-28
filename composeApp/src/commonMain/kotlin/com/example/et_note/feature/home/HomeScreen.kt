@@ -14,6 +14,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -41,21 +43,30 @@ import com.example.et_note.model.Note
 import com.example.et_note.notes.ListNotesScreen
 import et_note.composeapp.generated.resources.Res
 import et_note.composeapp.generated.resources.rafiki
+import et_note.composeapp.generated.resources.sync
 import et_note.composeapp.generated.resources.user
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(database: NoteDatabase,dataStoreManager: DataStoreManager, navController: NavController) {
+fun HomeScreen(
+    database: NoteDatabase,
+    dataStoreManager: DataStoreManager,
+    navController: NavController
+) {
     val viewModel = viewModel { HomeViewModel(database, dataStoreManager = dataStoreManager) }
     val bottomSheet = rememberModalBottomSheetState()
     var showBottomSheet by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
 
     val email = remember { mutableStateOf("") }
-    LaunchedEffect(true){
+    val userId = remember { mutableStateOf("") }
+
+    LaunchedEffect(true) {
         email.value = dataStoreManager.getEmail() ?: ""
+        userId.value = dataStoreManager.getUserId() ?: ""
     }
     Scaffold(
         floatingActionButton = {
@@ -84,7 +95,7 @@ fun HomeScreen(database: NoteDatabase,dataStoreManager: DataStoreManager, navCon
                     modifier = Modifier.align(Alignment.CenterEnd),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    email?.value?.let {
+                    email.value?.let {
                         Text(it)
                     }
                     Image(
@@ -93,8 +104,21 @@ fun HomeScreen(database: NoteDatabase,dataStoreManager: DataStoreManager, navCon
                         modifier = Modifier.padding(end = 16.dp).size(48.dp).padding(4.dp)
                             .clickable {
                                 coroutineScope.launch {
-                                    if (dataStoreManager.getToken() != null) navController.navigate("profile")
+                                    if (dataStoreManager.getToken() != null) navController.navigate(
+                                        "profile"
+                                    )
                                     else navController.navigate("signup")
+                                }
+                            }
+                    )
+
+                    Image(
+                        painterResource(Res.drawable.sync),
+                        null,
+                        modifier = Modifier.padding(end = 16.dp).size(48.dp).padding(4.dp)
+                            .clickable {
+                                coroutineScope.launch {
+                                    viewModel.performSync()
                                 }
                             }
                     )
@@ -126,7 +150,8 @@ fun HomeScreen(database: NoteDatabase,dataStoreManager: DataStoreManager, navCon
                             bottomSheet.hide()
                         }
                         showBottomSheet = false
-                    }
+                    },
+                    userId = userId.value
                 )
             }
         }
@@ -136,7 +161,8 @@ fun HomeScreen(database: NoteDatabase,dataStoreManager: DataStoreManager, navCon
 @Composable
 fun AddItemDialog(
     onSave: (Note) -> Unit,
-    onCancel: () -> Unit
+    onCancel: () -> Unit,
+    userId: String
 ) {
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
@@ -183,7 +209,15 @@ fun AddItemDialog(
             Text(
                 text = "save",
                 modifier = Modifier.padding(8.dp).clickable {
-                    onSave(Note(title, description))
+                    onSave(
+                        Note(
+                            title = title,
+                            description = description,
+                            userId = userId,
+                            isDirty = true,
+
+                        )
+                    )
                 }
             )
         }

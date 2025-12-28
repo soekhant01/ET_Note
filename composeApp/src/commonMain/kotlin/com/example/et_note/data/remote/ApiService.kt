@@ -52,9 +52,9 @@ class ApiService(val client: HttpClient, val dataStoreManager: DataStoreManager)
         return try {
             val response = client.post(urlString =  SYNC_ENDPOINT){
                 setBody(request)
-                header(HttpHeaders.Authorization, "Barer ${dataStoreManager.getToken() ?: ""}")
+                header(HttpHeaders.Authorization, "Bearer ${dataStoreManager.getToken() ?: ""}")
             }
-            if (response.status == HttpStatusCode.Created) Result.success(response.body() as SyncResponse)
+            if (response.status == HttpStatusCode.OK) Result.success(response.body() as SyncResponse)
             else Result.failure(Exception("Failed to load data"))
         }catch (ex: Exception){
             Result.failure(ex)

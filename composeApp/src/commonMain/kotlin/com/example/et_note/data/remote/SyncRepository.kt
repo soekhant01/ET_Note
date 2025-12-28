@@ -97,7 +97,6 @@ class SyncRepository(
         if(response.changes.isNotEmpty()){
             val serverNotes = response.changes.map { noteChange ->
                 Note(
-
                     title = noteChange.title,
                     description = noteChange.body,
                     id = noteChange.id,

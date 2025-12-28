@@ -3,17 +3,21 @@ package com.example.et_note.model
 import androidx.room.Delete
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import kotlinx.serialization.Serializable
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
-@Entity
-data class Note @OptIn(ExperimentalUuidApi::class) constructor(
-    val title: String, val description: String,
-    @PrimaryKey(autoGenerate = true) val id: String = Uuid.random().toString(),
+@Entity(tableName = "note")
+data class Note @OptIn(ExperimentalTime::class, ExperimentalUuidApi::class) constructor(
+    @PrimaryKey val id: String = Uuid.random().toString(),
+    val title: String,
+    val description: String,
     val isDeleted: Boolean = false,
-    val updatedAt: String,
     val isDirty: Boolean = false,
-    val userId: String
+    val userId: String,
+    val updatedAt: String = Clock.System.now().toString(),
 )
 
 

@@ -1,10 +1,13 @@
 package com.example.et_note.data.db
 
+import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.et_note.model.SyncMetaData
 
+
+@Dao
 interface SyncDataDao {
 
     @Query("SELECT * FROM syncmetadata WHERE id = 1")
